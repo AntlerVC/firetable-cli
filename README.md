@@ -1,133 +1,106 @@
-[![Firetable: Combine the power of Firestore with the simplicity of spreadsheets](https://firetable.io/social-image.jpg)](https://firetable.io)
+# Firetable CLI
 
-<p align="center">
-  
-  <a aria-label="License" href="https://github.com/AntlerVC/firetable/blob/master/LICENSE">
-    <img src="https://badgen.net/github/license/AntlerVC/firetable" />
-  </a>
-  
-  <a aria-label="Commits" href="https://github.com/AntlerVC/firetable/commits/develop">
-    <img src="https://badgen.net/github/last-commit/AntlerVC/firetable/develop" />
-  </a>
-  
-  <a aria-label="Firetable CLI" href="https://npmjs.com/package/firetable">
-    <img src="https://badgen.net/npm/v/firetable" />
-  </a>
+The Firetable CLI automates the steps required to set up the Firetable app and
+other operations on your computer.
 
-</p>
+<table><tbody><tr><td>
 
-# Features
+### Contents
 
-- Spreadsheet interface for viewing Firestore collections, documents, and
-  subcollections.
+- [Installation requirements](#installation-requirements)
+- [Install the Firetable CLI](#install-the-firetable-cli)
+- [Commands](#commands)
+  - [Create a new project](#create-a-new-project)
+  - [Run Firetable locally](#run-firetable-locally)
+  - [Deploy to Firebase Hosting](#deploy-to-firebase-hosting)
+  - [Set user roles for Firestore Security Rules](#set-user-roles-for-firestore-security-rules)
+  - [Deploy Firetable Cloud Functions](#deploy-firetable-cloud-functions)
 
-  - Add, edit, and delete rows
-  - Sort and filter by row values
-  - Resize and rename columns
+</td></tr></tbody></table>
 
-- 27 different column types.
-  [Read more](https://github.com/AntlerVC/firetable/wiki/Column-Types)
+## Installation requirements
 
-  - Basic types: Short Text, Long Text, Email, Phone, URL…
-  - Custom UI pickers: Date, Checkbox, Single Select, Multi Select…
-  - Uploaders: Image, File
-  - Rich Editors: JSON, Code, Rich Text (HTML)
+Make sure you have the following installed:
 
-- Powerful access controls with custom user roles.
-  [Read more](https://github.com/AntlerVC/firetable/wiki/Role-Based-Security-Rules)
+- [Git](https://git-scm.com/downloads)
+- [Node](https://nodejs.org/en/download/) 10, 11, or 12
+- [Yarn](https://classic.yarnpkg.com/en/docs/install/)
+- [Firebase CLI](https://firebase.google.com/docs/cli) 8
 
-- Supercharge your database with your own scripts.
+Also, make sure you are logged in to your Firebase account in the Firebase CLI:
 
-  - Action field: trigger any Cloud Function
-  - Derivative field: populate cell with value derived from the rest of the
-    row’s values
-  - Aggregate field: populate cell with value aggregated from the row’s
-    sub-table
+```
+firebase login
+```
 
-- Integrations with external services.
-  - Connect Table uses Algolia to get a snapshot of another table’s row values
-  - Connect Service uses any HTTP endpoint to get a cell value
+## Install the Firetable CLI
 
-## Firetable makes it easy to use key Firebase products
+Install the Firetable CLI globally.
 
-<p align="center">
-  <a href="https://firebase.google.com/products/firestore">
-    <img src="https://github.com/AntlerVC/firetable/wiki/images/firebase/firestore.png" alt="Cloud Firestore" width="32%" />
-  </a>
-  <a href="https://firebase.google.com/products/auth">
-    <img src="https://github.com/AntlerVC/firetable/wiki/images/firebase/authentication.png" alt="Firebase Authentication" width="32%" />
-  </a>
-  <a href="https://firebase.google.com/products/functions">
-    <img src="https://github.com/AntlerVC/firetable/wiki/images/firebase/functions.png" alt="Firebase Functions" width="32%" />
-  </a>
-  <a href="https://firebase.google.com/products/hosting">
-    <img src="https://github.com/AntlerVC/firetable/wiki/images/firebase/hosting.png" alt="Firebase Hosting" width="32%" />
-  </a>
-  <a href="https://firebase.google.com/products/storage">
-    <img src="https://github.com/AntlerVC/firetable/wiki/images/firebase/storage.png" alt="Firebase Storage" width="32%" />
-  </a>
-</p>
+```
+yarn global add firetable
+```
 
-## [Live demo →](https://try.firetable.io)
+## Commands
 
-<a href="https://try.firetable.io">
-  <img align="center" alt="Firetable demo GIF" src="https://firetable.io/demo.gif">
-</a>
+### Create a new project
 
-<br />
+```
+firetable init [directory]
+```
 
-# Getting started
+### Run Firetable locally
 
-To set up Firetable, you must be comfortable with working with the command line.
+Before you run locally, make sure you have a Firebase project set up.
+[Instructions →](https://github.com/AntlerVC/firetable/wiki/Getting-Started)
 
-You must have at least a basic understanding of how to use npm and install npm
-packages globally.
+```
+firetable start
+```
 
-We’ve created the Firetable CLI to automate the steps required to set up
-Firetable.
+### Deploy to Firebase Hosting
 
-### [**Read the getting started guide →**](https://github.com/AntlerVC/firetable/wiki/Getting-Started)
+First, make sure that you have created a site in your Firebase project.
+[Open Firebase console](https://console.firebase.google.com/project/_/hosting/main)
 
-<br />
+```
+firetable deploy
+```
 
-# Documentation
+### Set user roles for Firestore Security Rules
 
-We’re still working on improving our documentation and writing more
-beginner-friendly guides.
+Firetable has role-based access controls using Firestore Security Rules and
+custom claims in Firebase Authentication.
+[Read more →](https://github.com/AntlerVC/firetable/wiki/Role-Based-Security-Rules)
 
-[**Documentation on GitHub Wiki →**](https://github.com/AntlerVC/firetable/wiki)
+You can use the Firetable CLI the roles of Firebase Authentication users.
 
-<br />
+1. Download your project’s service account private key file from the Firebase
+   Console in
+   [Project Settings > Service Accounts.](https://console.firebase.google.com/u/0/project/_/settings/serviceaccounts/adminsdk)
+   This is used to run Firebase Admin SDK commands on your computer.
 
-# Issues
+2. Save the JSON file, without renaming it, in your current working directory.  
+   The file name should look like
+   `PROJECT-ID-firebase-adminsdk-ALPHANUMERIC-CHARACTERS.json`
 
-[![Open issues](https://badgen.net/github/open-issues/AntlerVC/firetable)](https://github.com/antlervc/firetable/issues)
+3. Run the following command to set the roles of the Firebase Authentication
+   user.  
+   You can view all users in Firebase Authentication and find their emails in
+   the
+   [Firebase Console.](https://console.firebase.google.com/project/_/authentication/users)
 
-[Create issues and bug reports here.](https://github.com/antlervc/firetable/issues)  
-Make sure to provide console log outputs and screenshots!
+   ```
+   firetable auth:setRoles <email> <roles>
+   ```
 
-# Roadmap and feature requests
+   [Example user roles →](https://github.com/AntlerVC/firetable/wiki/Role-Based-Security-Rules#example-roles)
 
-- [Roadmap](https://github.com/AntlerVC/firetable/wiki/Roadmap)
-- [View our ideas and feature requests](https://github.com/AntlerVC/firetable/projects/1)
+### Deploy Firetable Cloud Functions
 
-<br />
+Easily deploy Cloud Functions used to extend Firetable. You can choose which
+functions you want to deploy.
 
----
-
-<br />
-
-# About Antler Engineering
-
-<img src="https://firebasestorage.googleapis.com/v0/b/antler-vc.appspot.com/o/antler-logo.svg?alt=media&token=34db0e2e-1d24-4995-9efa-8bf209c55613" align="right" width="200" height="48" />
-
-Firetable is created and being actively developed by
-[Antler Engineering](https://twitter.com/AntlerEng).
-
-At [Antler](https://antler.co), we identify and invest in exceptional people.
-
-We’re a global startup generator and early-stage VC firm that builds
-groundbreaking technology companies.
-
-[Apply now](<https://www.antler.co/apply?utm_source=Firetable&utm_medium=website&utm_campaign=Thu%20Apr%2016%202020%2018:00:00%20GMT%2B0200%20(CEST)&utm_content=TechTracking>)
-to be part of a global cohort of tech founders.
+```
+firetable functions:deploy
+```
