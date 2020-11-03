@@ -3,6 +3,8 @@
 The Firetable CLI automates the steps required to set up the Firetable app and
 other operations on your computer.
 
+[![Firetable: Combine the power of Firestore with the simplicity of spreadsheets](https://firetable.io/social-image.jpg)](https://firetable.io)
+
 <table><tbody><tr><td>
 
 ### Contents
