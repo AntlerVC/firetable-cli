@@ -17,7 +17,7 @@ const useStyles = makeStyles((theme) =>
 
       pointerEvents: "none",
 
-      border: `1px solid #e0e0e0`,
+      border: `1px solid ${theme.palette.divider}`,
       borderTopWidth: 0,
       backgroundColor: theme.palette.background.paper,
 
@@ -29,6 +29,11 @@ const useStyles = makeStyles((theme) =>
       fontSize: "0.75rem",
       lineHeight: "inherit",
       color: theme.palette.text.secondary,
+
+      "& .cell-collapse-padding": {
+        margin: theme.spacing(0, -1.5),
+        width: `calc(100% + ${theme.spacing(3)}px)`,
+      },
     },
 
     value: {
@@ -83,7 +88,7 @@ export default function Cell({
             isRowSelected: false,
             onRowSelectionChange: () => {},
             isSummaryRow: false,
-          })
+          } as any)
         ) : typeof value === "string" ||
           typeof value === "number" ||
           value === undefined ||
