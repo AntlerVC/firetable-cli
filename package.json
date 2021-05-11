@@ -1,7 +1,7 @@
 {
   "name": "firetable",
   "alias": "firetable-cli",
-  "version": "1.1.6",
+  "version": "1.2.0",
   "description": "CLI tool to simplify firetable deployment processes",
   "repository": "https://github.com/AntlerVC/firetable-cli",
   "author": "Shams Mosowi",
