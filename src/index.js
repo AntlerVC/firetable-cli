@@ -11,7 +11,7 @@ const { directoryExists, findFile } = require("./lib/files");
 const process = require("process");
 const { Command } = require("commander");
 const { version } = require("../package.json");
-const { setUserRoles, getProjectTables } = require("./lib/firebaseAdmin");
+const { setUserRoles, getProjectTables,createUser } = require("./lib/firebaseAdmin");
 const program = new Command();
 program.version(version);
 
@@ -237,11 +237,18 @@ program
       if (result.success) {
         console.log(result.message);
       } else if (result.code === "auth/user-not-found") {
-        console.log(
-          chalk.bold(chalk.red("FAILED: ")),
-          `Could not find account with email`,
-          chalk.bold(email)
-        );
+      const { createNewUser } = await inquirer.createUser(email);
+        if (createNewUser){
+      const { displayName } = await inquirer.displayName();
+
+          createUser(email,roles,displayName)
+        }else{
+          console.log(
+            chalk.bold(chalk.red("FAILED: ")),
+            `Could not find account with email`,
+            chalk.bold(email)
+          );
+        }
       } else {
         console.log(chalk.bold(chalk.red(result.message)));
       }

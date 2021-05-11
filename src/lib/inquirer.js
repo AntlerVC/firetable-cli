@@ -30,7 +30,6 @@ module.exports = {
     ];
     return inquirer.prompt(questions);
   },
-
   askAlgoliaVariables: () => {
     const questions = [
       {
@@ -113,6 +112,26 @@ module.exports = {
         type: "list",
         message: "Select the Firetable collection",
         choices: collections,
+      },
+    ];
+    return inquirer.prompt(questions);
+  },
+  createUser: (email) => {
+    const questions = [
+      {
+        type: "confirm",
+        name: "createNewUser",
+        message: `It looks like there no existing account for ${email},\nWould you like to create a new account?`,
+      },
+    ];
+    return inquirer.prompt(questions);
+  },
+  newUser: () => {
+    const questions = [
+      {
+        type: "input",
+        name: "displayName",
+        message: `What's the display name for this account?`,
       },
     ];
     return inquirer.prompt(questions);

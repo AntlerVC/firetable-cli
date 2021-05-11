@@ -4,6 +4,7 @@ const fs = require("fs");
 const CLI = require("clui");
 const Spinner = CLI.Spinner;
 const chalk = require("chalk");
+const randomUid = () =>Date.now().toString(36) + Math.random().toString(36).substr(2);
 
 const initializeApp = (serviceAccountFile) => {
   console.log(chalk.grey(serviceAccountFile));
@@ -42,6 +43,38 @@ module.exports.setUserRoles = (serviceAccountFile) => async (email, roles) => {
     };
   }
 };
+
+module.exports.createUser = (serviceAccountFile) => async (email,roles,displayName) => {
+  try {
+    const { auth } = initializeApp(serviceAccountFile);
+    // Initialize Auth
+    // sets the custom claims on an account to the claims object provided
+
+   
+    await auth.importUsers([
+      {
+        displayName,
+        uid:randomUid(),
+        email,
+        // set users roles
+        customClaims: {roles},
+      },
+    ]);
+    return {
+      success: true,
+      message: `\n✅ Successfully created ${chalk.bold(email)} and set the roles: ${chalk.bold(
+        roles.join(", ")
+      )}`,
+    };
+  } catch (error) {
+    return {
+      success: false,
+      code: "auth/user-not-found",
+      message: error.message,
+    };
+  }
+};
+
 
 module.exports.getProjectTables = (serviceAccountFile) => async () => {
   try {
