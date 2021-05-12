@@ -245,7 +245,7 @@ program
         if (createNewUser) {
           const { displayName } = await inquirer.newUser();
 
-          createUser(email, roles, displayName);
+          await createUser(email, roles, displayName);
         } else {
           console.log(
             chalk.bold(chalk.red("FAILED: ")),

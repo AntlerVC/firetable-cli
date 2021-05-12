@@ -121,7 +121,7 @@ module.exports = {
       {
         type: "confirm",
         name: "createNewUser",
-        message: `It looks like there no existing account for ${email},\nWould you like to create a new account?`,
+        message: `There is no existing account for ${email}\nWould you like to create a new User account in firebase Auth?`,
       },
     ];
     return inquirer.prompt(questions);
