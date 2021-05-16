@@ -106,9 +106,9 @@ program
       // check if all the required packages are available on the machine
       await systemHealthCheck();
       const firebaseProjects = await getFirebaseProjects();
-      const { projectId } = await inquirer.selectFirebaseProject(
-        firebaseProjects
-      );
+      const projectId = (
+        await inquirer.selectFirebaseProject(firebaseProjects)
+      ).project.match(/(?<=\()(.*?)(?=\))/)[0];
       config.set("firebaseProjectId", projectId);
       let envVariables = {
         projectId,
@@ -125,11 +125,17 @@ program
       await terminal.cloneFiretable(dir);
 
       // set environment variables
-      await terminal.setFiretableENV(envVariables, dir);
 
       //get webapp config
       const webAppConfig = await getFiretableApp(projectId);
-      await terminal.createFirebaseAppConfigFile(webAppConfig, dir);
+      await terminal.setFiretableENV(
+        { ...envVariables, firebaseWebApiKey: webAppConfig.apiKey },
+        dir
+      );
+      await terminal.createFirebaseAppConfigFile(
+        JSON.stringify(webAppConfig),
+        dir
+      );
       console.log(chalk.green("Environment variables set successfully"));
       await terminal.buildFiretable(dir);
       console.log(
@@ -232,8 +238,12 @@ program
         const { createNewUser } = await inquirer.createUser(email);
         if (createNewUser) {
           const { displayName } = await inquirer.newUser();
-          const _result = await createUser(email, roles, displayName);
-          console.log(_result.message);
+          const resp = await createUser(adminSDKFilePath)(
+            email,
+            roles.split(","),
+            displayName
+          );
+          console.log(resp.message);
         } else {
           console.log(
             chalk.bold(chalk.red("FAILED: ")),
@@ -310,7 +320,8 @@ program
 // .command("experiment")
 // .description("test new ideas")
 // .action(async () => {
-//   getFiretableApp('')
+//   const sdkConfig = await getFiretableApp('')
+//   console.log(sdkConfig)
 // })
 
 program.parse(process.argv);

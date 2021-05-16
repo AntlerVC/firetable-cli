@@ -14,12 +14,18 @@ const initializeApp = (serviceAccountFile) => {
     encoding: "utf8",
   });
   const serviceAccountJSON = JSON.parse(serviceAccount);
-  admin.initializeApp({
-    credential: admin.credential.cert(serviceAccountJSON),
-    databaseURL: `https://${serviceAccountJSON.project_id}.firebaseio.com`,
-  });
-  const auth = admin.auth();
-  const db = admin.firestore();
+
+  let app;
+  if (admin.apps[0]) {
+    app = admin.apps[0];
+  } else {
+    app = admin.initializeApp({
+      credential: admin.credential.cert(serviceAccountJSON),
+      databaseURL: `https://${serviceAccountJSON.project_id}.firebaseio.com`,
+    });
+  }
+  const auth = app.auth();
+  const db = app.firestore();
   return { auth, db };
 };
 
@@ -73,7 +79,6 @@ module.exports.createUser = (serviceAccountFile) => async (
   } catch (error) {
     return {
       success: false,
-      code: "auth/user-not-found",
       message: error.message,
     };
   }
