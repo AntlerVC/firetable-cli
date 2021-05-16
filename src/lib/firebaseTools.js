@@ -9,18 +9,20 @@ module.exports.getFirebaseProjects = () =>
     client.projects
       .list()
       .then((data) => {
+        console.log(data);
         status.stop();
         resolve(data);
       })
       .catch((err) => {
         status.stop();
-
         console.error(err.message);
       });
   });
 
 module.exports.getFiretableApp = (projectId) =>
   new Promise((resolve) => {
+    const getSDKConfig = (appId) =>
+      client.apps.sdkconfig("web", appId, { project: projectId });
     const status = new Spinner("Checking for existing Firetable web app");
     status.start();
     client.apps
@@ -33,17 +35,20 @@ module.exports.getFiretableApp = (projectId) =>
           client.apps
             .create("WEB", "firetable-app", { project: projectId })
             .then((newApp) => {
-              console.log(newApp);
-              status.stop();
-              resolve(newApp);
+              getSDKConfig(newApp.appId).then((config) => {
+                status.stop();
+                resolve(config.sdkConfig);
+              });
             })
             .catch((err) => {
               status.stop();
               console.error(err);
             });
         } else {
-          status.stop();
-          resolve(filteredConfigs[0]);
+          getSDKConfig(filteredConfigs[0].appId).then((config) => {
+            status.stop();
+            resolve(config.sdkConfig);
+          });
         }
       })
       .catch((err) => {

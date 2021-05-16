@@ -4,7 +4,7 @@ const chalk = require("chalk");
 module.exports = {
   selectFirebaseProject: (projects) =>
     inquirer.prompt({
-      name: "projectId",
+      name: "project",
       type: "list",
       message: "Select the Firebase project you want deploy to:",
       choices: projects.map((project) =>

@@ -57,7 +57,7 @@ module.exports.cloneFiretable = (dir = "firetable") =>
     const cloningStatus = new Spinner("Cloning the Firetable repository");
     cloningStatus.start();
     execute(
-      `git clone --depth 1 https://github.com/AntlerVC/firetable.git ${dir}`,
+      `git clone --depth 1 https://github.com/FiretableProject/firetable.git ${dir}`,
       function () {
         cloningStatus.stop();
         const installingPackagesStatus = new Spinner("Installing packages");
@@ -154,63 +154,6 @@ module.exports.buildFiretable = (dir) =>
     execute(`cd ${dir}/www && yarn build`, function (stdout) {
       status.stop();
       resolve(true);
-    });
-  });
-
-module.exports.getFirebaseProjects = () =>
-  new Promise((resolve) => {
-    const status = new Spinner("Getting your Firebase projects");
-    status.start();
-    execute(`firebase projects:list`, function (results) {
-      status.stop();
-      if (results.includes("Failed to authenticate")) {
-        throw new Error(results);
-      }
-      const projects = results.match(
-        /(?<=│.*│ )[0-z,-]*(?=( \(current\))? *│ \d)/g
-      );
-      resolve(projects);
-    });
-  });
-
-module.exports.getExistingFiretableApp = (projectId) =>
-  new Promise((resolve) => {
-    const status = new Spinner("Checking for existing Firetable web app");
-    status.start();
-    execute(`firebase apps:list WEB --project ${projectId}`, function (
-      results
-    ) {
-      status.stop();
-      const firetableApp = results.match(/│ firetable-app.*/);
-      if (firetableApp) {
-        resolve(firetableApp[0].match(/\d:[0-9]*:web:[0-z]*/)[0]);
-      } else {
-        resolve(false);
-      }
-    });
-  });
-
-module.exports.createFiretableWebApp = (projectId) =>
-  new Promise((resolve) => {
-    const status = new Spinner(`Creating a Firetable web app in ${projectId}`);
-    status.start();
-    execute(
-      `firebase apps:create --project ${projectId} web firetable-app`,
-      function (results) {
-        status.stop();
-        resolve(results.match(/(?<=ID: ).*/)[0]);
-      }
-    );
-  });
-
-module.exports.getFiretableWebAppConfig = (webAppId) =>
-  new Promise((resolve) => {
-    const status = new Spinner(`Getting your Firetable web app config`);
-    status.start();
-    execute(`firebase apps:sdkconfig WEB ${webAppId}`, function (results) {
-      status.stop();
-      const config = results.match(/{(.*)([\s\S]*)}/)[0];
-      resolve(config);
     });
   });
 
