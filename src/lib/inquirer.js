@@ -7,7 +7,11 @@ module.exports = {
       name: "projectId",
       type: "list",
       message: "Select the Firebase project you want deploy to:",
-      choices: projects,
+      choices: projects.map((project) =>
+        project.displayName
+          ? `${project.displayName}(${project.projectId})`
+          : project.projectId
+      ),
       validate: function (value) {
         if (value.length) {
           return true;

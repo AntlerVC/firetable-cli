@@ -4,6 +4,7 @@ const fs = require("fs");
 const clear = require("clear");
 const { printLogo } = require("./logo");
 const terminal = require("./lib/terminal");
+const { getFirebaseProjects } = require("./lib/firebaseTools");
 const inquirer = require("./lib/inquirer");
 const Configstore = require("configstore");
 const config = new Configstore("firetable");
@@ -104,7 +105,7 @@ program
       printLogo();
       // check if all the required packages are available on the machine
       await systemHealthCheck();
-      const firebaseProjects = await terminal.getFirebaseProjects();
+      const firebaseProjects = await getFirebaseProjects();
       const { projectId } = await inquirer.selectFirebaseProject(
         firebaseProjects
       );
@@ -244,8 +245,8 @@ program
         const { createNewUser } = await inquirer.createUser(email);
         if (createNewUser) {
           const { displayName } = await inquirer.newUser();
-
-          await createUser(email, roles, displayName);
+          const _result = await createUser(email, roles, displayName);
+          console.log(_result.message);
         } else {
           console.log(
             chalk.bold(chalk.red("FAILED: ")),
@@ -317,5 +318,14 @@ program
       console.log(error);
     }
   });
+
+// program
+// .command("experiment")
+// .description("test new ideas")
+// .action(async () => {
+//  const projects = await getProjects()
+//   console.log(projects)
+
+// })
 
 program.parse(process.argv);
