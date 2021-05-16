@@ -4,7 +4,7 @@ const fs = require("fs");
 const clear = require("clear");
 const { printLogo } = require("./logo");
 const terminal = require("./lib/terminal");
-const { getFirebaseProjects } = require("./lib/firebaseTools");
+const { getFirebaseProjects, getFiretableApp } = require("./lib/firebaseTools");
 const inquirer = require("./lib/inquirer");
 const Configstore = require("configstore");
 const config = new Configstore("firetable");
@@ -126,22 +126,9 @@ program
 
       // set environment variables
       await terminal.setFiretableENV(envVariables, dir);
-      let firetableAppId;
 
-      const existingFiretableAppId = await terminal.getExistingFiretableApp(
-        projectId
-      );
-
-      if (existingFiretableAppId) {
-        firetableAppId = existingFiretableAppId;
-      } else {
-        firetableAppId = await terminal.createFiretableWebApp(projectId);
-      }
-
-      const webAppConfig = await terminal.getFiretableWebAppConfig(
-        firetableAppId
-      );
-
+      //get webapp config
+      const webAppConfig = await getFiretableApp(projectId);
       await terminal.createFirebaseAppConfigFile(webAppConfig, dir);
       console.log(chalk.green("Environment variables set successfully"));
       await terminal.buildFiretable(dir);
@@ -229,7 +216,7 @@ program
         )}\n\nDownload and add it to this directory without renaming it.\n\nYou can find your service account here:\n${chalk.underline(
           `https://console.firebase.google.com/u/0/project/${projectId}/settings/serviceaccounts/adminsdk`
         )}\n\nInstructions: ${chalk.underline(
-          "https://github.com/AntlerVC/firetable/wiki/Role-Based-Security-Rules#set-user-roles-with-the-firetable-cli"
+          "https://github.com/FiretableProject/firetable/wiki/Role-Based-Security-Rules#set-user-roles-with-the-firetable-cli"
         )}`
       );
       // let directory = await directoryCheck();
@@ -281,7 +268,7 @@ program
         )}\n\nDownload and add it to this directory without renaming it.\n\nYou can find your service account here:\n${chalk.underline(
           `https://console.firebase.google.com/u/0/project/${projectId}/settings/serviceaccounts/adminsdk`
         )}\n\nInstructions: ${chalk.underline(
-          "https://github.com/AntlerVC/firetable/wiki/Role-Based-Security-Rules#set-user-roles-with-the-firetable-cli"
+          "https://github.com/FiretableProject/firetable/wiki/Role-Based-Security-Rules#set-user-roles-with-the-firetable-cli"
         )}`
       );
 
@@ -323,9 +310,7 @@ program
 // .command("experiment")
 // .description("test new ideas")
 // .action(async () => {
-//  const projects = await getProjects()
-//   console.log(projects)
-
+//   getFiretableApp('')
 // })
 
 program.parse(process.argv);
