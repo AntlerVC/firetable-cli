@@ -191,6 +191,36 @@ program
   });
 
 program
+  .command("update [branch]")
+  .description("Runs your Firetable app locally")
+  .action(async (branch = "master") => {
+    try {
+      // Make sure there is a build
+      // await terminal.buildFiretable(directory);
+      await terminal.updateFiretable(branch);
+      await terminal.buildFiretable();
+      console.log(
+        chalk.green(
+          chalk.bold("\n\u2705 Firetable has been successfully updated")
+        )
+      );
+      console.log(
+        `   ${chalk.yellow("firetable start ")}${chalk.dim(
+          "  Run your Firetable instance locally"
+        )}`
+      );
+      console.log(
+        `   ${chalk.yellow("firetable deploy")}${chalk.dim(
+          "  Deploy you your Firetable app to Firebase Hosting"
+        )}`
+      );
+    } catch (error) {
+      console.log("\u{1F6D1}" + chalk.bold(chalk.red(" FAILED")));
+      console.log(error);
+    }
+  });
+
+program
   .command("deploy")
   .description("Deploys Firetable to a Firebase Hosting site")
   .action(async () => {

@@ -9,7 +9,6 @@ module.exports.getFirebaseProjects = () =>
     client.projects
       .list()
       .then((data) => {
-        console.log(data);
         status.stop();
         resolve(data);
       })

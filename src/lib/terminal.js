@@ -70,6 +70,24 @@ module.exports.cloneFiretable = (dir = "firetable") =>
     );
   });
 
+module.exports.updateFiretable = (branch) =>
+  new Promise((resolve) => {
+    const cloningStatus = new Spinner("Pulling from the Firetable repository");
+    cloningStatus.start();
+    execute(
+      `git remote set-branches origin '*';git fetch -v;git checkout ${branch};git pull;`,
+      function () {
+        cloningStatus.stop();
+        const installingPackagesStatus = new Spinner("updating packages");
+        installingPackagesStatus.start();
+        execute(`cd www && yarn;`, function (results) {
+          installingPackagesStatus.stop();
+          resolve(results);
+        });
+      }
+    );
+  });
+
 module.exports.setFiretableENV = (envVariables, dir) =>
   new Promise((resolve) => {
     const status = new Spinner("Setting environment variables");
@@ -151,7 +169,9 @@ module.exports.buildFiretable = (dir) =>
       "Building Firetable. This will take a few minutes"
     );
     status.start();
-    execute(`cd ${dir}/www && yarn build`, function (stdout) {
+    execute(`cd ${dir ? `${dir + "/"}` : ""}www && yarn build`, function (
+      stdout
+    ) {
       status.stop();
       resolve(true);
     });
