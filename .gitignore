@@ -4,6 +4,7 @@
 /node_modules
 www/node_modules
 www/.firebaserc
+package-lock.json
 
 Firetable/node_modules
 cloud_functions/functions/node_modules
