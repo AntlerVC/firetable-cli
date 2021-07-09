@@ -51,6 +51,34 @@ module.exports.setUserRoles = (serviceAccountFile) => async (email, roles) => {
   }
 };
 
+module.exports.getUserRoles = (serviceAccountFile) => async (email) => {
+  try {
+    const { auth } = initializeApp(serviceAccountFile);
+    // Initialize Auth
+    // sets the custom claims on an account to the claims object provided
+    const user = await auth.getUserByEmail(email);
+    const roles = user.customClaims.roles;
+    if (!roles || roles.length === 0) {
+      return {
+        success: false,
+        message: `\n${chalk.bold(email)} has no roles`,
+      };
+    }
+    return {
+      success: true,
+      message: `\n${chalk.bold(email)} has the roles: ${chalk.bold(
+        roles.join(", ")
+      )}`,
+    };
+  } catch (error) {
+    return {
+      success: false,
+      code: "auth/user-not-found",
+      message: error.message,
+    };
+  }
+};
+
 module.exports.createUser = (serviceAccountFile) => async (
   email,
   roles,

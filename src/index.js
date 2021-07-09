@@ -14,6 +14,7 @@ const { Command } = require("commander");
 const { version } = require("../package.json");
 const {
   setUserRoles,
+  getUserRoles,
   getProjectTables,
   createUser,
 } = require("./lib/firebaseAdmin");
@@ -292,6 +293,38 @@ program
   });
 
 program
+  .command("auth:getRoles <email>")
+  .description("gets roles of a Firebase Auth user")
+  .action(async (email) => {
+    try {
+      // check directory for admin sdk json
+      const projectId = config.get("firebaseProjectId")
+        ? config.get("firebaseProjectId")
+        : "_";
+      const adminSDKFilePath = await findFile(
+        /.*-firebase-adminsdk.*json/,
+        `${chalk.bold(
+          "Cannot find the Firebase service account private key file"
+        )}\n\nDownload and add it to this directory without renaming it.\n\nYou can find your service account here:\n${chalk.underline(
+          `https://console.firebase.google.com/u/0/project/${projectId}/settings/serviceaccounts/adminsdk`
+        )}\n\nInstructions: ${chalk.underline(
+          "https://github.com/FiretableProject/firetable/wiki/Role-Based-Security-Rules#set-user-roles-with-the-firetable-cli"
+        )}`
+      );
+      const result = await getUserRoles(adminSDKFilePath)(email);
+      if (result.success) {
+        console.log(result.message);
+      } else {
+        console.log(chalk.bold(chalk.red(result.message)));
+      }
+    } catch (error) {
+      console.log("\u{1F6D1}" + chalk.bold(chalk.red(" FAILED")));
+      console.log(error);
+    }
+    process.exit(1);
+  });
+
+program
   .command("functions:deploy")
   .description("Deploys a specified Firetable Cloud Function")
   .action(async () => {
@@ -346,12 +379,39 @@ program
     }
   });
 
-// program
-// .command("experiment")
-// .description("test new ideas")
-// .action(async () => {
-//   const sdkConfig = await getFiretableApp('')
-//   console.log(sdkConfig)
-// })
+program
+  .command("switch")
+  .description("switch firebase projects")
+  .action(async () => {
+    const firebaseProjects = await getFirebaseProjects();
+    const projectId = (
+      await inquirer.selectFirebaseProject(firebaseProjects)
+    ).project.match(/(?<=\()(.*?)(?=\))/)[0];
+    config.set("firebaseProjectId", projectId);
+    let envVariables = {
+      projectId,
+      firebaseWebApiKey: "-",
+      algoliaAppId: "_",
+      algoliaSearchKey: "_",
+    };
+    const includeAlgolia = await inquirer.installAlgolia();
+    if (includeAlgolia.installAlgolia) {
+      const algoliaKey = await inquirer.askAlgoliaVariables();
+      envVariables = { ...envVariables, ...algoliaKey };
+    }
+    // set environment variables
+    const dir = "firetable";
+    //get webapp config
+    const webAppConfig = await getFiretableApp(projectId);
+    await terminal.setFiretableENV(
+      { ...envVariables, firebaseWebApiKey: webAppConfig.apiKey },
+      dir
+    );
+    await terminal.createFirebaseAppConfigFile(
+      JSON.stringify(webAppConfig),
+      dir
+    );
+    console.log(chalk.green("Environment variables set successfully"));
+  });
 
 program.parse(process.argv);
