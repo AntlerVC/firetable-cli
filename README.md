@@ -60,6 +60,13 @@ Before you run locally, make sure you have a Firebase project set up.
 firetable start
 ```
 
+### Update Firetable
+
+Fetches the latest version of firetable from a spicific branch (default:master)
+```
+firetable update [branch]
+```
+
 ### Deploy to Firebase Hosting
 
 First, make sure that you have created a site in your Firebase project.
